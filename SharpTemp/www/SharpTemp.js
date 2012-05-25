@@ -3,7 +3,7 @@
 var updateInterval = 500;
 var temperatures = [3];
 var ratesOfChange = [2];
-var alarms = [2];
+var alarms = null;
 var firstIndex = -1;
 var currentPage = "pageGraph";
 
@@ -59,31 +59,61 @@ function updateData() {
         dataType: "json",
         cache: false,
         success: function (msg) {
-            var temps = msg.Temps; ;
-            var alarms = msg.Alarms;
+            var temps = msg.Temps;
+            var newAlarms = msg.Alarms;
             // start at the correct index
-            if (firstIndex == -1) {
+            if (firstIndex == -1 && temps) {
                 firstIndex = temps[0];
             }
             // only update our temps if there is new data available
-            if (temps[0] >= temperatures[0].length + firstIndex) {
-                temperatures[0].push([temps[0], temps[1]]);
-                temperatures[1].push([temps[0], temps[2]]);
-                temperatures[2].push([temps[0], temps[4]]);
-                ratesOfChange[0].push([temps[0], temps[3]]);
-                ratesOfChange[1].push([temps[0], temps[5]]);
+            if (temps != null){
+                if(temps[0] >= temperatures[0].length + firstIndex) {
+                    temperatures[0].push([temps[0], temps[1]]);
+                    temperatures[1].push([temps[0], temps[2]]);
+                    temperatures[2].push([temps[0], temps[4]]);
+                    ratesOfChange[0].push([temps[0], temps[3]]);
+                    ratesOfChange[1].push([temps[0], temps[5]]);
 
-                if (currentPage == "pageGraph") {
-                    var plot = $.plot($("#tempGraph"), [temperatures[0], temperatures[1], temperatures[2]], optionsTemp);
-                    plot.draw();
-                    plot = $.plot($("#rateGraph"), [ratesOfChange[0], ratesOfChange[1]], optionsRate);
-                    plot.draw();
-                } else if (currentPage == "pageDisplay") {
-                    $("#amb", "#pageDisplay").html(temps[1]);
-                    $("#t0", "#pageDisplay").html(temps[2]);
-                    $("#t1", "#pageDisplay").html(temps[4]);
-                    $("#r0", "#pageDisplay").html(temps[3]);
-                    $("#r1", "#pageDisplay").html(temps[5]);
+                    if (currentPage == "pageGraph") {
+                        var plot = $.plot($("#tempGraph"), [temperatures[0], temperatures[1], temperatures[2]], optionsTemp);
+                        plot.draw();
+                        plot = $.plot($("#rateGraph"), [ratesOfChange[0], ratesOfChange[1]], optionsRate);
+                        plot.draw();
+                    } else if (currentPage == "pageDisplay") {
+                        $("#amb", "#pageDisplay").html(temps[1]);
+                        $("#t0", "#pageDisplay").html(temps[2]);
+                        $("#t1", "#pageDisplay").html(temps[4]);
+                        $("#r0", "#pageDisplay").html(temps[3]);
+                        $("#r1", "#pageDisplay").html(temps[5]);
+                        if (alarms == null) {
+                            alarms = newAlarms;
+                            if (alarms[0] != null) {
+                                $("#alarm0", "#pageDisplay").val(alarms[0]);
+                            }
+                            if (alarms[1] != null) {
+                                $("#alarm1", "#pageDisplay").val(alarms[1]);
+                            }
+                        } else {
+                            if (newAlarms[0] !== alarms[0]) {
+                                if (newAlarms[0] == null) {
+                                    $("#alarm0", "#pageDisplay").val("");
+                                } else {
+                                    $("#alarm0", "#pageDisplay").val(newAlarms[0]);
+                                }
+                                //$('#alarm0').textinput();
+                                alarms[0] = newAlarms[0];
+                            }
+                            if (newAlarms[1] !== alarms[1]) {
+                                if (newAlarms[1] == null) {
+                                    $("#alarm1", "#pageDisplay").val("");
+                                } else {
+                                    $("#alarm1", "#pageDisplay").val(newAlarms[1]);
+                                }
+                                //$('#alarm1').textinput();
+                                alarms[1] = newAlarms[1];
+                            }
+                        }
+                    }
                 }
             }
         },      // Error!
