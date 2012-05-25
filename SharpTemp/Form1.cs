@@ -49,7 +49,7 @@ namespace SharpTemp
 
             System.ComponentModel.IContainer components = new System.ComponentModel.Container();
             _serialPort1 = new System.IO.Ports.SerialPort(components);
-            _serialPort1.PortName = "COM3";
+            _serialPort1.PortName = SharpTemp.Properties.Settings.Default.com_port;
             _serialPort1.BaudRate = 57600;
 
             _serialPort1.Open();
@@ -249,32 +249,36 @@ namespace SharpTemp
 
         private void SendEmail(object data)
         {
-            string[] emailText = (string[])data;
-            string subject = emailText[0];
-            string body = emailText[1];
+            if (SharpTemp.Properties.Settings.Default.gmail_email.Length > 0)
+            {
+                string[] emailText = (string[])data;
+                string subject = emailText[0];
+                string body = emailText[1];
 
-            
-            string email = SharpTemp.Properties.Settings.Default.gmail_email;
-            string password = SharpTemp.Properties.Settings.Default.gmail_password;
-            var fromAddress = new MailAddress(email);
-            var toAddress = new MailAddress(email);
 
-            var smtp = new SmtpClient
-            {
-                Host = "smtp.gmail.com",
-                Port = 587,
-                EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(fromAddress.Address, password)
-            };
-            using (var message = new MailMessage(fromAddress, toAddress)
-            {
-                Subject = subject,
-                Body = body
-            })
-            {
-                smtp.Send(message);
+                string email = SharpTemp.Properties.Settings.Default.gmail_email;
+                string password = SharpTemp.Properties.Settings.Default.gmail_password;
+
+                var fromAddress = new MailAddress(email);
+                var toAddress = new MailAddress(email);
+
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromAddress.Address, password)
+                };
+                using (var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body
+                })
+                {
+                    smtp.Send(message);
+                }
             }
         }
 

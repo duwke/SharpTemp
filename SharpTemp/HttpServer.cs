@@ -222,7 +222,8 @@ namespace Bend.Util
 
         public void listen()
         {
-            listener = new TcpListener(port);
+            IPEndPoint addr = new IPEndPoint(IPAddress.Any, port);
+            listener = new TcpListener(addr);
             listener.Start();
             while (is_active)
             {

@@ -170,7 +170,9 @@
     <Content Include="www\jquery.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="www\SharpTemp.js" />
+    <Content Include="www\SharpTemp.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="www\Test.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
