@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Sharptemp : Temp Monitor using tc4-shield" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Sharptemp</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/duwke/SharpTemp">View on GitHub</a>
+
+          <h1 id="project_title">Sharptemp</h1>
+          <h2 id="project_tagline">Temp Monitor using tc4-shield</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/duwke/SharpTemp/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/duwke/SharpTemp/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>c# access to <a href="http://code.google.com/p/tc4-shield/">http://code.google.com/p/tc4-shield/</a> </p>
+
+<p>Current features -
+Graph amabient, T0 probe, and T1 probe
+Alarm for T0 and T1 (email)
+Webserver - json of ambient, t0, t1, rate0, rate1, alarm1, alarm2
+JQuery Mobile plotting</p>
+
+<p>TODO - 
+Add Mobile alarm management (notifications?)
+On close - export to CSV
+Installer</p>
+
+<p>Known issues -
+On close, the COM port sticks and you have to force close.<br>
+I read there was some .Net COM bug, but there must be a workaround.
+T1 alarm sends the T0 temp.</p>
+
+<p>This project is currently in source code only, so you must have visual studio 2010 to get it running.  In addition, you must have a tc4-shield, programmed with the latest "bourbon" arduino code from 
+<a href="http://code.google.com/p/tc4-shield/downloads/list">http://code.google.com/p/tc4-shield/downloads/list</a>
+TC4-StdLib-REL-300.zip &amp; aBourbon-REL-300.zip</p>
+
+<p>Once you have the tc4 attached, you must set the app.config with the following settings - 
+gmail_email, gmail_password, com_port
+com_port is required.  If you want alarms to work, the gmail settings are required.</p>
+
+<p>On start, it should send you an email letting you know that it's begun, and sending you the mobile link.  You can use this to view the graph and alarms on your phone.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Sharptemp maintained by <a href="https://github.com/duwke">duwke</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
