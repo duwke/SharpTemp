@@ -40,7 +40,7 @@ $(document).ready(function(){
 
     // Navigation
     $.mobile.page.prototype.options.backBtnText = "Back";
-    $.mobile.page.prototype.options.addBackBtn = true;
+    //$.mobile.page.prototype.options.addBackBtn = true;
     $.mobile.page.prototype.options.backBtnTheme = "a";
 
     // Page
