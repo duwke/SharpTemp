@@ -9,6 +9,9 @@ using System.Windows.Forms;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Net.Mail;
+using System.Net;
+using System.Configuration;
 
 namespace SharpTemp
 {
@@ -17,11 +20,24 @@ namespace SharpTemp
         private System.IO.Ports.SerialPort _serialPort1;
         private bool _isStarted = false;
         private double _lastAmbient = 0;
+        private double _lastT0 = 0;
         private double _lastT1 = 0;
-        private double _lastT2 = 0;
         private bool _showLast50 = false;
         private MyHttpServer _httpServer;
         private Thread _httpThread;
+        private int _port = 8080;
+
+        // alarms
+        private enum Rate
+        {
+            RISING,
+            FALLING
+        }
+        private Rate _t0Rate = Rate.RISING;
+        private Rate _t1Rate = Rate.RISING;
+        private double? _t0AlarmTemp = null;
+        private double? _t1AlarmTemp = null;
+
 
         public Form1()
         {
@@ -42,7 +58,7 @@ namespace SharpTemp
                 Console.WriteLine("Oops");
                 return;
             }
-            _httpServer = new MyHttpServer(8080);
+            _httpServer = new MyHttpServer(_port);
             _httpThread = new Thread(new ThreadStart(_httpServer.listen));
             _httpThread.Start();
             
@@ -73,6 +89,9 @@ namespace SharpTemp
             Chart1.ChartAreas[0].AxisX.TitleFont = new System.Drawing.Font("Verdana", 10, System.Drawing.FontStyle.Bold);
             Chart1.ChartAreas[0].AxisY.Title = "Temp";
             Chart1.ChartAreas[0].AxisY.TitleFont = new System.Drawing.Font("Verdana", 10, System.Drawing.FontStyle.Bold);
+
+            textBox1.Text = SharpTemp.Properties.Settings.Default.T0Alarm.ToString();
+            textBox2.Text = SharpTemp.Properties.Settings.Default.T1Alarm.ToString();
         }
 
         private void StartLogger()
@@ -86,21 +105,42 @@ namespace SharpTemp
                 Console.WriteLine("Send Reset");
                 System.Threading.Thread.Sleep(500);
             }
+            if (_isStarted)
+            {
+                IPHostEntry host;
+                string localIP = "?";
+                host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (IPAddress ip in host.AddressList)
+                {
+                    if (ip.AddressFamily.ToString() == "InterNetwork")
+                    {
+                        localIP = ip.ToString();
+                    }
+                }
+                SendEmail(new string[]{"SharpTemp Started", "goto: http://" + localIP + ":" + _port.ToString() + "/www/Index.html"});
+            }
         }
             
         public void NewTemp(string msg){
+            msg = msg.Replace("\r", "");
             string[] datum = msg.Split(',');
             label1.Text = msg;
+            btnAlarm1.Enabled = true;
+            btnAlarm2.Enabled = true;
             if (datum.Length > 5)
             {
+                // graph
+                double index = double.Parse(datum[0]);
                 _lastAmbient = double.Parse(datum[1]);
-                DataPoint dp = new DataPoint(double.Parse(datum[0]), _lastAmbient);
+                DataPoint dp = new DataPoint(index, _lastAmbient);
                 Chart1.Series["Ambient"].Points.Add(dp);
-                _lastT1 = double.Parse(datum[2]);
-                dp = new DataPoint(double.Parse(datum[0]), _lastT1);
+                _lastT0 = double.Parse(datum[2]);
+                dp = new DataPoint(index, _lastT0);
                 Chart1.Series["T0"].Points.Add(dp);
-                _lastT2 = double.Parse(datum[4]);
-                dp = new DataPoint(double.Parse(datum[0]), _lastT2);
+                double t0Rate = double.Parse(datum[3]);
+                _lastT1 = double.Parse(datum[4]);
+                double t1Rate = double.Parse(datum[5]);
+                dp = new DataPoint(index, _lastT1);
                 Chart1.Series["T1"].Points.Add(dp);
 
                 if (_showLast50 && Chart1.Series["Ambient"].Points.Count > 50)
@@ -112,9 +152,34 @@ namespace SharpTemp
                 {
                     Chart1.ChartAreas[0].AxisX.ScaleView.ZoomReset();
                 }
-                _httpServer.Temps = new double[] { _lastAmbient, _lastT1, _lastT2 };
-            }
 
+                // webserver
+                double[] temps = { index, _lastAmbient, _lastT0, t0Rate, _lastT1, t1Rate };
+                _httpServer.TempInfo.Temps = temps;
+                _httpServer.TempInfo.Alarms = new double?[] { _t0AlarmTemp, _t1AlarmTemp };
+
+                // alarms
+                if (_t0AlarmTemp.HasValue)
+                {
+                    if ((_t0Rate == Rate.RISING && _lastT0 >= _t0AlarmTemp) || _t0Rate == Rate.FALLING && _lastT0 <= _t0AlarmTemp)
+                    {
+                        btnAlarm1.BackColor = Color.White;
+                        _t0AlarmTemp = null;
+                        Thread t = new Thread(new ParameterizedThreadStart(SendEmail));
+                        t.Start(new string[]{"Temp Alarm", _lastT0.ToString()});
+                    }
+                }
+                if (_t1AlarmTemp.HasValue)
+                {
+                    if ((_t1Rate == Rate.RISING && _lastT1 >= _t1AlarmTemp) || _t1Rate == Rate.FALLING && _lastT1 <= _t1AlarmTemp)
+                    {
+                        btnAlarm2.BackColor = Color.White;
+                        _t1AlarmTemp = null;
+                        Thread t = new Thread(new ParameterizedThreadStart(SendEmail));
+                        t.Start(new string[] { "Temp Alarm", _lastT0.ToString() });
+                    }
+                }
+            }
         }
         public delegate void NewTempDelegate(string msg);
 
@@ -143,22 +208,22 @@ namespace SharpTemp
         private void button2_Click(object sender, EventArgs e)
         {
             double ymin = _lastAmbient;
+            if (_lastT0 < ymin)
+            {
+                ymin = _lastT0;
+            }
             if (_lastT1 < ymin)
             {
                 ymin = _lastT1;
             }
-            if (_lastT2 < ymin)
-            {
-                ymin = _lastT2;
-            }
             double ymax = _lastAmbient;
+            if (_lastT0 > ymax)
+            {
+                ymax = _lastT0;
+            }
             if (_lastT1 > ymax)
             {
                 ymax = _lastT1;
-            }
-            if (_lastT2 > ymax)
-            {
-                ymax = _lastT2;
             }
             Chart1.ChartAreas[0].AxisY.ScaleView.Position = ymin - 1;
             Chart1.ChartAreas[0].AxisY.ScaleView.Size = ymax - ymin + 2;
@@ -181,5 +246,86 @@ namespace SharpTemp
                 _serialPort1.Close();
             }
         }
+
+        private void SendEmail(object data)
+        {
+            string[] emailText = (string[])data;
+            string subject = emailText[0];
+            string body = emailText[1];
+
+            
+            string email = SharpTemp.Properties.Settings.Default.gmail_email;
+            string password = SharpTemp.Properties.Settings.Default.gmail_password;
+            var fromAddress = new MailAddress(email);
+            var toAddress = new MailAddress(email);
+
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, password)
+            };
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body
+            })
+            {
+                smtp.Send(message);
+            }
+        }
+
+        private void btnAlarm1_Click(object sender, EventArgs e)
+        {
+            double tmp;
+            if (!_t0AlarmTemp.HasValue && double.TryParse(textBox1.Text, out tmp))
+            {
+                _t0AlarmTemp = tmp;
+                btnAlarm1.BackColor = Color.Red;
+                if (_lastT0 < _t0AlarmTemp)
+                {
+                    _t0Rate = Rate.RISING;
+                }
+                else
+                {
+                    _t0Rate = Rate.FALLING;
+                }
+                SharpTemp.Properties.Settings.Default.T0Alarm = tmp;
+            }
+            else
+            {
+                _t0AlarmTemp = null;
+                btnAlarm1.BackColor = Color.White;
+            }
+        }
+
+        private void btnAlarm2_Click(object sender, EventArgs e)
+        {
+            double tmp;
+            if (!_t1AlarmTemp.HasValue && double.TryParse(textBox2.Text, out tmp))
+            {
+                _t1AlarmTemp = tmp;
+                btnAlarm2.BackColor = Color.Red;
+                if (_lastT1 < _t1AlarmTemp)
+                {
+                    _t1Rate = Rate.RISING;
+                }
+                else
+                {
+                    _t1Rate = Rate.FALLING;
+                }
+                SharpTemp.Properties.Settings.Default.T1Alarm = tmp;
+            }
+            else
+            {
+                _t1AlarmTemp = null;
+                btnAlarm2.BackColor = Color.White;
+            }
+
+        }
+
     }
 }

@@ -22,5 +22,53 @@ namespace SharpTemp.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("darin@keever.cc")]
+        public string gmail_email {
+            get {
+                return ((string)(this["gmail_email"]));
+            }
+            set {
+                this["gmail_email"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Sailing2")]
+        public string gmail_password {
+            get {
+                return ((string)(this["gmail_password"]));
+            }
+            set {
+                this["gmail_password"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("160")]
+        public double T0Alarm {
+            get {
+                return ((double)(this["T0Alarm"]));
+            }
+            set {
+                this["T0Alarm"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("70")]
+        public double T1Alarm {
+            get {
+                return ((double)(this["T1Alarm"]));
+            }
+            set {
+                this["T1Alarm"] = value;
+            }
+        }
     }
 }

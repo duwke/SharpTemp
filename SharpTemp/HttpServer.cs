@@ -58,28 +58,37 @@ namespace Bend.Util
             inputStream = new BufferedStream(socket.GetStream());
 
             // we probably shouldn't be using a streamwriter for all output from handlers either
-            outputStream = new StreamWriter(new BufferedStream(socket.GetStream()));
             try
             {
-                parseRequest();
-                readHeaders();
-                if (http_method.Equals("GET"))
+                using (outputStream = new StreamWriter(new BufferedStream(socket.GetStream())))
                 {
-                    handleGETRequest();
-                }
-                else if (http_method.Equals("POST"))
-                {
-                    handlePOSTRequest();
+                    try
+                    {
+                        parseRequest();
+                        readHeaders();
+                        if (http_method.Equals("GET"))
+                        {
+                            handleGETRequest();
+                        }
+                        else if (http_method.Equals("POST"))
+                        {
+                            handlePOSTRequest();
+                        }
+                        outputStream.Flush();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Exception: " + e.ToString());
+                        writeFailure();
+                    }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine("Exception: " + e.ToString());
-                writeFailure();
+                Console.WriteLine("Exception: " + ex.ToString());
             }
-            outputStream.Flush();
             // bs.Flush(); // flush any remaining output
-            inputStream = null; outputStream = null; // bs = null;            
+            inputStream = null;             
             socket.Close();
         }
 
@@ -95,7 +104,7 @@ namespace Bend.Util
             http_url = tokens[1];
             http_protocol_versionstring = tokens[2];
 
-            Console.WriteLine("starting: " + request);
+            //Console.WriteLine("starting: " + request);
         }
 
         public void readHeaders()

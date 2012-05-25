@@ -15,7 +15,14 @@ namespace SharpTemp
         {
         }
 
-        public double[] Temps = null;
+        public class TempsAndAlarms
+        {
+            public double[] Temps = null;
+            public double?[] Alarms = null;
+
+        }
+
+        public TempsAndAlarms TempInfo = new TempsAndAlarms();
 
         public override void handleGETRequest(HttpProcessor p)
         {
@@ -45,7 +52,7 @@ namespace SharpTemp
             {
                 System.Web.Script.Serialization.JavaScriptSerializer j = new System.Web.Script.Serialization.JavaScriptSerializer();
 
-                p.outputStream.WriteLine(j.Serialize(Temps));
+                p.outputStream.WriteLine(j.Serialize(TempInfo));
             }
         }
 
