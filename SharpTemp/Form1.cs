@@ -25,7 +25,8 @@ namespace SharpTemp
         private bool _showLast50 = false;
         private MyHttpServer _httpServer;
         private Thread _httpThread;
-        private int _port = 8080;
+        //private int _port = 8080;
+        private int _port = SharpTemp.Properties.Settings.Default.web_port;
 
         // alarms
         private enum Rate
@@ -77,12 +78,12 @@ namespace SharpTemp
 
             Chart1.Series["Ambient"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             Chart1.Series["Ambient"].IsVisibleInLegend = true;
-            Chart1.Series["Ambient"].ToolTip = "Data Point Y Value: #VALY{G}";
+            Chart1.Series["Ambient"].ToolTip = "Data Point Value: #VALY{G}";
 
-            Chart1.Series.Add("T0");
-            Chart1.Series["T0"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            Chart1.Series.Add("T1");
-            Chart1.Series["T1"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            Chart1.Series.Add("Cold");
+            Chart1.Series["Cold"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            Chart1.Series.Add("Hot");
+            Chart1.Series["Hot"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
 
 
             Chart1.ChartAreas[0].AxisX.Title = "Time";
@@ -136,12 +137,12 @@ namespace SharpTemp
                 Chart1.Series["Ambient"].Points.Add(dp);
                 _lastT0 = double.Parse(datum[2]);
                 dp = new DataPoint(index, _lastT0);
-                Chart1.Series["T0"].Points.Add(dp);
+                Chart1.Series["Cold"].Points.Add(dp);
                 double t0Rate = double.Parse(datum[3]);
                 _lastT1 = double.Parse(datum[4]);
                 double t1Rate = double.Parse(datum[5]);
                 dp = new DataPoint(index, _lastT1);
-                Chart1.Series["T1"].Points.Add(dp);
+                Chart1.Series["Hot"].Points.Add(dp);
 
                 if (_showLast50 && Chart1.Series["Ambient"].Points.Count > 50)
                 {
@@ -328,6 +329,11 @@ namespace SharpTemp
                 _t1AlarmTemp = null;
                 btnAlarm2.BackColor = Color.White;
             }
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
 
         }
 

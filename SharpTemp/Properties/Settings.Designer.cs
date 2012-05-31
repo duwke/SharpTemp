@@ -25,7 +25,7 @@ namespace SharpTemp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("160")]
+        [global::System.Configuration.DefaultSettingValueAttribute("70")]
         public double T0Alarm {
             get {
                 return ((double)(this["T0Alarm"]));
@@ -37,7 +37,7 @@ namespace SharpTemp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("70")]
+        [global::System.Configuration.DefaultSettingValueAttribute("175")]
         public double T1Alarm {
             get {
                 return ((double)(this["T1Alarm"]));
@@ -80,6 +80,18 @@ namespace SharpTemp.Properties {
             }
             set {
                 this["com_port"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("32080")]
+        public int web_port {
+            get {
+                return ((int)(this["web_port"]));
+            }
+            set {
+                this["web_port"] = value;
             }
         }
     }

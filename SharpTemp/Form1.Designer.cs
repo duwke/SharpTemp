@@ -54,9 +54,9 @@
             // 
             // Chart1
             // 
-            this.Chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             chartArea2.Name = "ChartArea1";
             this.Chart1.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
@@ -99,7 +99,7 @@
             this.btnAlarm1.Name = "btnAlarm1";
             this.btnAlarm1.Size = new System.Drawing.Size(117, 27);
             this.btnAlarm1.TabIndex = 4;
-            this.btnAlarm1.Text = "Set T0 Alarm";
+            this.btnAlarm1.Text = "Set Cold Alarm";
             this.btnAlarm1.UseVisualStyleBackColor = true;
             this.btnAlarm1.Click += new System.EventHandler(this.btnAlarm1_Click);
             // 
@@ -111,7 +111,7 @@
             this.btnAlarm2.Name = "btnAlarm2";
             this.btnAlarm2.Size = new System.Drawing.Size(139, 27);
             this.btnAlarm2.TabIndex = 5;
-            this.btnAlarm2.Text = "Set T1 Alarm";
+            this.btnAlarm2.Text = "Set Hot Alarm";
             this.btnAlarm2.UseVisualStyleBackColor = true;
             this.btnAlarm2.Click += new System.EventHandler(this.btnAlarm2_Click);
             // 
@@ -123,6 +123,7 @@
             this.textBox1.Size = new System.Drawing.Size(117, 20);
             this.textBox1.TabIndex = 6;
             this.textBox1.Text = "170";
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // textBox2
             // 
