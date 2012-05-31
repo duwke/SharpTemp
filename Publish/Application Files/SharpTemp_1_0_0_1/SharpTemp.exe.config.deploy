@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<configuration>
+<configSections>
+    <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+        <section name="SharpTemp.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
+    </sectionGroup>
+</configSections>
+<startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/></startup><userSettings>
+        <SharpTemp.Properties.Settings>
+            <setting name="T0Alarm" serializeAs="String">
+                <value>160</value>
+            </setting>
+            <setting name="T1Alarm" serializeAs="String">
+                <value>70</value>
+            </setting>
+            <setting name="gmail_email" serializeAs="String">
+                <value>skthumperd@gmail.com</value>
+            </setting>
+            <setting name="gmail_password" serializeAs="String">
+                <value>Ir0nm@n01</value>
+            </setting>
+            <setting name="com_port" serializeAs="String">
+                <value>COM3</value>
+            </setting>
+            <setting name="web_port" serializeAs="String">
+                <value>32080</value>
+            </setting>
+        </SharpTemp.Properties.Settings>
+    </userSettings>
+</configuration>
