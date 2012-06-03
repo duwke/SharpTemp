@@ -102,6 +102,7 @@ function updateData() {
                                 }
                                 //$('#alarm0').textinput();
                                 alarms[0] = newAlarms[0];
+                                $('#btnSet0').removeClass('ui-disabled');
                             }
                             if (newAlarms[1] !== alarms[1]) {
                                 if (newAlarms[1] == null) {
@@ -111,6 +112,7 @@ function updateData() {
                                 }
                                 //$('#alarm1').textinput();
                                 alarms[1] = newAlarms[1];
+                                $('#btnSet0').removeClass('ui-disabled');
                             }
                         }
                     }
@@ -142,23 +144,29 @@ $(document).delegate("#pageGraph", "pageinit", function () {
 $(document).delegate("#pageDisplay", "pageinit", function () {
     currentPage = "pageDisplay";
     $("#btnSet0").bind('click', function (e) {
-        setAlarm(function () {
-                $('#btnSet0').addClass('ui-disabled');
-            }
+        setAlarm(0, $('#alarm0').val(), function () {
+            $('#btnSet0').addClass('ui-disabled');
+        }
+        );
+    });
+    $("#btnSet1").bind('click', function (e) {
+        setAlarm(1, $('#alarm1').val(), function () {
+            $('#btnSet1').addClass('ui-disabled');
+        }
         );
     });
 
-    function setAlarm(success) {
+    function setAlarm(index, temp, success) {
 
         var params = {
-            "username": $('#username').val(),
-            "password": $('#password').val()
-        };
+            "index": index,
+            "temp": temp
+        };  
         $.ajax({
             type: "POST",
             beforeSend: function () { $.mobile.showPageLoadingMsg(); }, //Show spinner
             complete: function () { $.mobile.hidePageLoadingMsg(); }, //Hide spinner
-            url: "http://192.168.1.147:8080",
+            url: serviceUrl + "SetAlarm",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(params),
             dataType: "json",

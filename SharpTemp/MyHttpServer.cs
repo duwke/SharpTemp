@@ -22,6 +22,10 @@ namespace SharpTemp
 
         }
 
+        public delegate void AlarmChangeHandler(int index, double? temp);
+
+        // Define an Event based on the above Delegate
+        public event AlarmChangeHandler NewAlarm;
         public TempsAndAlarms TempInfo = new TempsAndAlarms();
 
         public override void handleGETRequest(HttpProcessor p)
@@ -56,11 +60,33 @@ namespace SharpTemp
             }
         }
 
+        public class SetAlarmArgs
+        {
+            public int index;
+            public string temp;
+        }
         public override void handlePOSTRequest(HttpProcessor p, StreamReader inputData)
         {
-            if (p.http_url.Contains("setAlarm"))
+            if (p.http_url.ToLower().Contains("setalarm"))
             {
+                string args = inputData.ReadToEnd();
+                System.Web.Script.Serialization.JavaScriptSerializer j = new System.Web.Script.Serialization.JavaScriptSerializer();
+                SetAlarmArgs saa = j.Deserialize<SetAlarmArgs>(args);
 
+                if (NewAlarm != null)
+                {
+                    if(saa.temp.Length == 0){
+                        NewAlarm(saa.index, null);
+                    }else{
+                        double dbl = 0;
+                        if(double.TryParse(saa.temp, out dbl)){
+                            NewAlarm(saa.index, dbl);
+                        }else{
+                            NewAlarm(saa.index, null);
+                        }
+                    }
+                }
+                //NewAlarm(p.httpHeaders["temp"]);
                  p.outputStream.WriteLine( "ok");
             }
             else

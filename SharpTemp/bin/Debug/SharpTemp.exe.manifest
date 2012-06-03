@@ -42,33 +42,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SharpTemp.exe" size="24064">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SharpTemp.exe" size="24576">
       <assemblyIdentity name="SharpTemp" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>F9wRezMQTv2qjFxv2Z+AvXYzx0M=</dsig:DigestValue>
+        <dsig:DigestValue>p2QKYA2Yl7o7Yq3+gJGu9hvGz5Y=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="SharpTemp.exe.config" size="1485">
+  <file name="SharpTemp.exe.config" size="1479">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>QjPZyXoWgszQUewNSIbyRsd5TVw=</dsig:DigestValue>
-    </hash>
-  </file>
-  <file name="www\Index.html" size="3393">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>23wv99Ho2T9vk2GYwgI3uWX4J0g=</dsig:DigestValue>
+      <dsig:DigestValue>X9Yqo0Ifl0LzyZ3qLCNW7GP4w78=</dsig:DigestValue>
     </hash>
   </file>
   <file name="www\jquery.colorhelpers.js" size="6289">
@@ -305,13 +296,22 @@
       <dsig:DigestValue>JMZxTQz42phx3raMpSn0fap/x3Q=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="www\SharpTemp.js" size="6291">
+  <file name="www\SharpTemp.html" size="3497">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>Oec8siTittXk0wloqc4W1MJ43qc=</dsig:DigestValue>
+      <dsig:DigestValue>/GpSzThCXbhraXF88zcvzMh695s=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="www\SharpTemp.js" size="6616">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>p21ccL0ibD+MPo87veSjQrooj5I=</dsig:DigestValue>
     </hash>
   </file>
   <file name="www\Test.html" size="3545">

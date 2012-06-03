@@ -27,7 +27,7 @@ namespace SharpTemp
         private Thread _httpThread;
         //private int _port = 8080;
         private int _port = SharpTemp.Properties.Settings.Default.web_port;
-
+        
         // alarms
         private enum Rate
         {
@@ -62,6 +62,7 @@ namespace SharpTemp
             _httpServer = new MyHttpServer(_port);
             _httpThread = new Thread(new ThreadStart(_httpServer.listen));
             _httpThread.Start();
+            _httpServer.NewAlarm += new MyHttpServer.AlarmChangeHandler(SetAlarm);
             
             // this turns on !
             _serialPort1.DtrEnable = true;
@@ -118,7 +119,7 @@ namespace SharpTemp
                         localIP = ip.ToString();
                     }
                 }
-                SendEmail(new string[]{"SharpTemp Started", "goto: http://" + localIP + ":" + _port.ToString() + "/www/Index.html"});
+                SendEmail(new string[]{"SharpTemp Started", "goto: http://" + localIP + ":" + _port.ToString() + "/www/SharpTemp.html"});
             }
         }
             
@@ -288,22 +289,69 @@ namespace SharpTemp
             double tmp;
             if (!_t0AlarmTemp.HasValue && double.TryParse(textBox1.Text, out tmp))
             {
-                _t0AlarmTemp = tmp;
-                btnAlarm1.BackColor = Color.Red;
-                if (_lastT0 < _t0AlarmTemp)
-                {
-                    _t0Rate = Rate.RISING;
-                }
-                else
-                {
-                    _t0Rate = Rate.FALLING;
-                }
-                SharpTemp.Properties.Settings.Default.T0Alarm = tmp;
+                SetAlarm(0, tmp);
             }
             else
             {
-                _t0AlarmTemp = null;
-                btnAlarm1.BackColor = Color.White;
+                SetAlarm(0, null);
+            }
+        }
+
+        private void SetAlarm(int index, double? temp)
+        {
+            if (this.InvokeRequired)
+            {
+                MyHttpServer.AlarmChangeHandler stc = new MyHttpServer.AlarmChangeHandler(SetAlarm);
+                this.Invoke(stc, new object[] { index, temp });
+            }
+            else
+            {
+                if (index == 0)
+                {
+                    _t0AlarmTemp = temp;
+                    if (temp.HasValue)
+                    {
+                        btnAlarm1.BackColor = Color.Red;
+                        if (_lastT0 < _t0AlarmTemp)
+                        {
+                            _t0Rate = Rate.RISING;
+                        }
+                        else
+                        {
+                            _t0Rate = Rate.FALLING;
+                        }
+                        SharpTemp.Properties.Settings.Default.T0Alarm = temp.Value;
+                        textBox1.Text = temp.Value.ToString();
+                    }
+                    else
+                    {
+                        btnAlarm1.BackColor = Color.White;
+                        textBox1.Text = "";
+                    }
+                }
+                else if (index == 1)
+                {
+                    _t1AlarmTemp = temp;
+                    if (temp.HasValue)
+                    {
+                        btnAlarm2.BackColor = Color.Red;
+                        if (_lastT1 < _t1AlarmTemp)
+                        {
+                            _t1Rate = Rate.RISING;
+                        }
+                        else
+                        {
+                            _t1Rate = Rate.FALLING;
+                        }
+                        SharpTemp.Properties.Settings.Default.T1Alarm = temp.Value;
+                        textBox2.Text = temp.Value.ToString();
+                    }
+                    else
+                    {
+                        btnAlarm2.BackColor = Color.White;
+                        textBox2.Text = "";
+                    }
+                }
             }
         }
 
@@ -312,24 +360,12 @@ namespace SharpTemp
             double tmp;
             if (!_t1AlarmTemp.HasValue && double.TryParse(textBox2.Text, out tmp))
             {
-                _t1AlarmTemp = tmp;
-                btnAlarm2.BackColor = Color.Red;
-                if (_lastT1 < _t1AlarmTemp)
-                {
-                    _t1Rate = Rate.RISING;
-                }
-                else
-                {
-                    _t1Rate = Rate.FALLING;
-                }
-                SharpTemp.Properties.Settings.Default.T1Alarm = tmp;
+                SetAlarm(1, tmp);
             }
             else
             {
-                _t1AlarmTemp = null;
-                btnAlarm2.BackColor = Color.White;
+                SetAlarm(1, null);
             }
-
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)

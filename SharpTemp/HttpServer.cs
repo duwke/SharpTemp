@@ -109,13 +109,13 @@ namespace Bend.Util
 
         public void readHeaders()
         {
-            Console.WriteLine("readHeaders()");
+            //Console.WriteLine("readHeaders()");
             String line;
             while ((line = streamReadLine(inputStream)) != null)
             {
                 if (line.Equals(""))
                 {
-                    Console.WriteLine("got headers");
+                    //Console.WriteLine("got headers");
                     return;
                 }
 
@@ -132,7 +132,7 @@ namespace Bend.Util
                 }
 
                 string value = line.Substring(pos, line.Length - pos);
-                Console.WriteLine("header: {0}:{1}", name, value);
+                //Console.WriteLine("header: {0}:{1}", name, value);
                 httpHeaders[name] = value;
             }
         }
@@ -151,7 +151,7 @@ namespace Bend.Util
             // we hand him needs to let him see the "end of the stream" at this content 
             // length, because otherwise he won't know when he's seen it all! 
 
-            Console.WriteLine("get post data start");
+            //Console.WriteLine("get post data start");
             int content_len = 0;
             MemoryStream ms = new MemoryStream();
             if (this.httpHeaders.ContainsKey("Content-Length"))
@@ -167,10 +167,10 @@ namespace Bend.Util
                 int to_read = content_len;
                 while (to_read > 0)
                 {
-                    Console.WriteLine("starting Read, to_read={0}", to_read);
+                    //Console.WriteLine("starting Read, to_read={0}", to_read);
 
                     int numread = this.inputStream.Read(buf, 0, Math.Min(BUF_SIZE, to_read));
-                    Console.WriteLine("read finished, numread={0}", numread);
+                    //Console.WriteLine("read finished, numread={0}", numread);
                     if (numread == 0)
                     {
                         if (to_read == 0)
@@ -187,7 +187,7 @@ namespace Bend.Util
                 }
                 ms.Seek(0, SeekOrigin.Begin);
             }
-            Console.WriteLine("get post data end");
+            //Console.WriteLine("get post data end");
             srv.handlePOSTRequest(this, new StreamReader(ms));
 
         }
