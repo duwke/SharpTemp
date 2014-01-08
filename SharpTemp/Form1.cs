@@ -27,6 +27,7 @@ namespace SharpTemp
         private Thread _httpThread;
         //private int _port = 8080;
         private int _port = SharpTemp.Properties.Settings.Default.web_port;
+        private System.IO.StreamWriter _sr;
         
         // alarms
         private enum Rate
@@ -70,6 +71,9 @@ namespace SharpTemp
             // callback for text coming back from the arduino
             _serialPort1.DataReceived += OnReceived;
 
+            // open output csv file
+            _sr = new System.IO.StreamWriter(System.IO.File.OpenWrite(System.DateTime.Now.ToShortDateString() + System.DateTime.Now.ToShortTimeString() + ".csv"));
+            
             Thread t = new Thread(new ThreadStart(StartLogger));
             t.Start();
 
@@ -155,6 +159,9 @@ namespace SharpTemp
                     Chart1.ChartAreas[0].AxisX.ScaleView.ZoomReset();
                 }
 
+                // csv
+                _sr.WriteLine(msg);
+
                 // webserver
                 double[] temps = { index, _lastAmbient, _lastT0, t0Rate, _lastT1, t1Rate };
                 _httpServer.TempInfo.Temps = temps;
@@ -238,15 +245,17 @@ namespace SharpTemp
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            _sr.Flush();
+            _sr.Close();
+            _sr = null;
             _httpThread.Abort();
             // this will close the port
-            using (_serialPort1)
-            {
-                _serialPort1.DataReceived -= OnReceived;
-                _serialPort1.DtrEnable = false;
-                _serialPort1.DiscardOutBuffer();
-                _serialPort1.Close();
-            }
+            _serialPort1.DataReceived -= OnReceived;
+            System.Threading.Thread.Sleep(500);
+            //_serialPort1.DtrEnable = false;
+            //_serialPort1.DiscardOutBuffer();
+            _serialPort1.Close();
+            _serialPort1 = null;
         }
 
         private void SendEmail(object data)
